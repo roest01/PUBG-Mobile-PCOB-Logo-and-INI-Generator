@@ -19,6 +19,23 @@ No original logo file will get removed or overwritten. Everything moved into `In
 ## Dependencies
 - The script uses ImageMagick (convert) for image processing tasks. Ensure you have ImageMagick installed on your system.
 
+## How to run on windows?
+Go to `Settings` > `Update & Security` > `For Developers`. 
+Check the Developer Mode radio button. 
+And search for "Windows Features", choose "Turn Windows features on or off".
+
+Scroll to find WSL, check the box, and then install it. 
+Once done, one has to reboot to finish installing the requested changes. 
+Press Restart now.  BASH will be available in the Command Prompt and PowerShell.
+
+### After install of WSL
+Open Command Prompt and navigate to the folder where the script file is available.
+Type `bash convertImages.sh` and hit the enter key.
+
+## DEMO
+![](https://raw.githubusercontent.com/roest01/PUBG-Mobile-PCOB-Logo-and-INI-Generator/main/demo_logo_generator.gif)
+
+
 ---
 This script was developed by discord.gg/EuroElite to simplify the process of preparing team logos and generating the required INI file for PUBG Mobile PCOB Client. With this script, you can save time and effort by automating the conversion and formatting of logo images to meet the specific requirements of PCOB.
 

@@ -28,6 +28,14 @@ create_input_folder_and_move_files() {
       convert "$file" "Input/${new_file_name}.png"
     fi
   done
+
+  # Convert jpg and jpeg files in player pics to PNG
+    for file in player_pics/*.jpg Input/*.jpeg; do
+      if [[ -f "$file" ]]; then
+        new_file_name=$(basename "$file" | tr '[:upper:]' '[:lower:]' | sed 's/\(.*\)\..*/\1/') # Convert to lowercase and remove file extension
+        convert "$file" "player_pics/${new_file_name}.png"
+      fi
+    done
 }
 
 # Function to resize and center the image
@@ -76,11 +84,11 @@ if [[ -f "slots.txt" ]]; then
     tag_lower=$(echo "$tag" | tr '[:upper:]' '[:lower:]')
 
     # Set logo files
-    TLAC=$(echo "$TLAC" | sed "s/TeamLogoPath=c:\/logo\/$index.png,/TeamLogoPath=c:\/logo\/$tag_lower.png,/g")
-    TLAC=$(echo "$TLAC" | sed "s/KillInfoPath=c:\/logo\/$index.png,/KillInfoPath=c:\/logo\/$tag_lower.png,/g")
+    TLAC=$(echo "$TLAC" | sed -E "s#TeamLogoPath=C:/LOGO/(00|0)?$index.png,#TeamLogoPath=C:/LOGO/$tag_lower.png,#g")
+    TLAC=$(echo "$TLAC" | sed -E "s#KillInfoPath=C:/KILLINFO/(00|0)?$index.png,#KillInfoPath=C:/LOGO/$tag_lower.png,#g")
 
     # Set team name
-    TLAC=$(echo "$TLAC" | sed "s/TeamName=$index,/TeamName=$team_name,/g")
+    TLAC=$(echo "$TLAC" | sed "s/TeamName=Team$index,/TeamName=$team_name,/g")
 
     echo "Slot $index with team $team_name and logo $tag_lower.png"
 

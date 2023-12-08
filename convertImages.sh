@@ -72,13 +72,40 @@ resize_and_center_image() {
   fi
 }
 
-# Schritt 1: Create Input folder and move the source files there
+remove_background_if_necessary() {
+  local input_file=$1
+  local output_file=$2
+
+  echo $(identify -format '%[opaque]' "$input_file")
+  if [[ $(identify -format '%[opaque]' "$input_file") == "True" ]]; then
+
+     # Determine the most common color
+     most_common_color=$(convert "$input_file" -format %c -depth 8 histogram:info:- | sort -n | tail -1 | sed -n 's/.*\(#.*\).*/\1/p')
+
+     # Replace the most common color with transparency
+     convert "$input_file" -fuzz 10% -transparent "$most_common_color" "${output_file}_transparent.png"
+     echo "The most common color $most_common_color has been replaced with transparency."
+
+    # store the source file as _src and move the transparent modifcation 
+     mv "$input_file" "${output_file}_src.png"
+     mv "${output_file}_transparent.png" "${output_file}.png"
+
+  else
+     echo "The image already contains transparency. No change necessary."
+  fi
+}
+
+# Step 1: Create Input folder and move the source files there
 create_input_folder_and_move_files
 
-# Schritt 2: Loop through the PNG files in the Input folder and process them
+# Step 2: Loop through the PNG files in the Input folder and process them
 for file in Input/*.png; do
   if [[ -f "$file" ]]; then
     filename=$(basename "$file" .png) # Extract the filename without extension
+
+    # Remove background
+    remove_background_if_necessary "Input/${filename}.png" "Input/${filename}"
+
     resize_and_center_image "$filename.png" 256
     resize_and_center_image "$filename.png" 128
     resize_and_center_image "$filename.png" 64
@@ -86,15 +113,15 @@ for file in Input/*.png; do
   fi
 done
 
-# Schritt 3: Check if the slots.txt file exists and create the updated TeamLogoAndColor.ini
+# Step 3: Check if the slots.txt file exists and create the updated TeamLogoAndColor.ini
 if [[ -f "slots.txt" ]]; then
-  # Schritt 1: Read the content of TeamLogoAndColor_base.ini into TeamLogoAndColorBase
+  # Step 1: Read the content of TeamLogoAndColor_base.ini into TeamLogoAndColorBase
   cp TeamLogoAndColor_base.ini TeamLogoAndColor.ini
 
   TLAC=$(<TeamLogoAndColor.ini)
   teams=1
 
-  # Schritt 2: Loop through the lines in slots.txt and replace the placeholders in TeamLogoAndColorBase
+  # Step 2: Loop through the lines in slots.txt and replace the placeholders in TeamLogoAndColorBase
   while IFS=';' read -r team_name tag; do
     # Convert tag to lowercase
     tag_lower=$(echo "$tag" | tr '[:upper:]' '[:lower:]')
@@ -116,7 +143,7 @@ if [[ -f "slots.txt" ]]; then
     ((teams++))
   done < slots.txt
 
-  # Schritt 3: Write TLAC variable to TeamLogoAndColor.ini file
+  # Step 3: Write TLAC variable to TeamLogoAndColor.ini file
   echo "$TLAC" > TeamLogoAndColor.ini
 
   echo -e "${GREEN}Processed $processed_images/$teams images. Converted $converted_jpg JPG to PNG.${NC}"

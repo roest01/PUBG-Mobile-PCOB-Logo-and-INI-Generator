@@ -19,6 +19,7 @@
 create_input_folder_and_move_files() {
   mkdir -p Input
   mkdir -p Output
+  mkdir -p OutputSPX
   mv *.png Input/
 
   # Convert jpg and jpeg files to PNG and move them to the Input folder
@@ -53,7 +54,9 @@ resize_and_center_image() {
   # Edit and save image without size information if the desired size is 256
   if [[ "$output_size" -eq 256 ]]; then
     convert "Input/$input_file" -background none -gravity center -resize 256x256 -extent 256x256 "Output/$output_file_without_size"
-    echo "Image $input_file processed and saved as $output_file_without_size."
+    echo "Image $input_file processed and saved as $output_file_without_size. and in OutputSPX folder"
+
+    cp "Output/$output_file_without_size" "OutputSPX/$output_file_without_size"
   fi
 }
 

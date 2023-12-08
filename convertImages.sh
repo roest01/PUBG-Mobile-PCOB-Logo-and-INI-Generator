@@ -23,6 +23,9 @@ NC='\033[0m' # No color
 # Global Variable
 processed_images=0
 converted_jpg=0
+missing_images=()
+
+
 # Function to create the Input folder and move source files
 create_input_folder_and_move_files() {
   mkdir -p Input
@@ -96,6 +99,10 @@ if [[ -f "slots.txt" ]]; then
     # Convert tag to lowercase
     tag_lower=$(echo "$tag" | tr '[:upper:]' '[:lower:]')
 
+    if ! [[ -f "Input/${tag_lower}.png" ]]; then
+      missing_images+=("$tag_lower")
+    fi
+
     # Set logo files
     TLAC=$(echo "$TLAC" | sed -E "s#TeamLogoPath=C:/LOGO/(00|0)?$index.png,#TeamLogoPath=C:/LOGO/$tag_lower.png,#g")
     TLAC=$(echo "$TLAC" | sed -E "s#KillInfoPath=C:/KILLINFO/(00|0)?$index.png,#KillInfoPath=C:/LOGO/$tag_lower.png,#g")
@@ -113,4 +120,10 @@ if [[ -f "slots.txt" ]]; then
   echo "$TLAC" > TeamLogoAndColor.ini
 
   echo -e "${GREEN}Processed $processed_images/$teams images. Converted $converted_jpg JPG to PNG.${NC}"
+
+  if [ ${#missing_images[@]} -ne 0 ]; then
+    echo -e "${RED}Missing images for slots: ${missing_images[*]}${NC}"
+  else
+    echo -e "${GREEN}All images are present for the slots.${NC}"
+  fi
 fi

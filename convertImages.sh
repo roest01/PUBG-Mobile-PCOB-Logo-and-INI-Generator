@@ -15,6 +15,14 @@
 # Sample format for slots.txt where team is the Name and 001.png (the tag) will be used as the logo:
 # Team 001;001
 
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No color
+
+# Global Variable
+processed_images=0
+converted_jpg=0
 # Function to create the Input folder and move source files
 create_input_folder_and_move_files() {
   mkdir -p Input
@@ -27,6 +35,7 @@ create_input_folder_and_move_files() {
     if [[ -f "$file" ]]; then
       new_file_name=$(basename "$file" | tr '[:upper:]' '[:lower:]' | sed 's/\(.*\)\..*/\1/') # Convert to lowercase and remove file extension
       convert "$file" "Input/${new_file_name}.png"
+      ((converted_jpg++))
     fi
   done
 
@@ -70,6 +79,7 @@ for file in Input/*.png; do
     resize_and_center_image "$filename.png" 256
     resize_and_center_image "$filename.png" 128
     resize_and_center_image "$filename.png" 64
+    ((processed_images++))
   fi
 done
 
@@ -79,7 +89,7 @@ if [[ -f "slots.txt" ]]; then
   cp TeamLogoAndColor_base.ini TeamLogoAndColor.ini
 
   TLAC=$(<TeamLogoAndColor.ini)
-  index=1
+  teams=1
 
   # Schritt 2: Loop through the lines in slots.txt and replace the placeholders in TeamLogoAndColorBase
   while IFS=';' read -r team_name tag; do
@@ -95,10 +105,12 @@ if [[ -f "slots.txt" ]]; then
 
     echo "Slot $index with team $team_name and logo $tag_lower.png"
 
-    # Increment the index for the next iteration
-    ((index++))
+    # Increment the teamsIndex for the next iteration
+    ((teams++))
   done < slots.txt
 
   # Schritt 3: Write TLAC variable to TeamLogoAndColor.ini file
   echo "$TLAC" > TeamLogoAndColor.ini
+
+  echo -e "${GREEN}Processed $processed_images/$teams images. Converted $converted_jpg JPG to PNG.${NC}"
 fi

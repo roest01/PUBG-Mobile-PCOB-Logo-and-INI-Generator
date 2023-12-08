@@ -88,7 +88,7 @@ if [[ -f "slots.txt" ]]; then
     TLAC=$(echo "$TLAC" | sed -E "s#KillInfoPath=C:/KILLINFO/(00|0)?$index.png,#KillInfoPath=C:/LOGO/$tag_lower.png,#g")
 
     # Set team name
-    TLAC=$(echo "$TLAC" | sed "s/TeamName=Team$index,/TeamName=$team_name,/g")
+    TLAC=$(echo "$TLAC" | sed "s/TeamName=Team $index,/TeamName=$team_name,/g")
 
     echo "Slot $index with team $team_name and logo $tag_lower.png"
 

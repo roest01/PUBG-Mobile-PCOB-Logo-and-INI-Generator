@@ -29,8 +29,8 @@ missing_images=()
 # Function to create the Input folder and move source files
 create_input_folder_and_move_files() {
   mkdir -p Input
-  mkdir -p Output
-  mkdir -p OutputSPX
+  rm -r Output && mkdir -p Output
+  rm -r OutputSPX &&  mkdir -p OutputSPX
   mv *.png Input/
 
   # Convert jpg and jpeg files to PNG and move them to the Input folder
@@ -86,7 +86,7 @@ remove_background_if_necessary() {
      convert "$input_file" -fuzz 10% -transparent "$most_common_color" "${output_file}_transparent.png"
      echo "The most common color $most_common_color has been replaced with transparency."
 
-    # store the source file as _src and move the transparent modifcation 
+    # store the source file as _src and move the transparent modifcation
      mv "$input_file" "${output_file}_src.png"
      mv "${output_file}_transparent.png" "${output_file}.png"
 
@@ -131,13 +131,13 @@ if [[ -f "slots.txt" ]]; then
     fi
 
     # Set logo files
-    TLAC=$(echo "$TLAC" | sed -E "s#TeamLogoPath=C:/LOGO/(00|0)?$index.png,#TeamLogoPath=C:/LOGO/$tag_lower.png,#g")
-    TLAC=$(echo "$TLAC" | sed -E "s#KillInfoPath=C:/KILLINFO/(00|0)?$index.png,#KillInfoPath=C:/LOGO/$tag_lower.png,#g")
+    TLAC=$(echo "$TLAC" | sed -E "s#TeamLogoPath=C:/LOGO/(00|0)?$teams.png,#TeamLogoPath=C:/LOGO/$tag_lower.png,#g")
+    TLAC=$(echo "$TLAC" | sed -E "s#KillInfoPath=C:/KILLINFO/(00|0)?$teams.png,#KillInfoPath=C:/LOGO/$tag_lower.png,#g")
 
     # Set team name
-    TLAC=$(echo "$TLAC" | sed "s/TeamName=Team $index,/TeamName=$team_name,/g")
+    TLAC=$(echo "$TLAC" | sed "s/TeamName=Team $teams,/TeamName=$team_name,/g")
 
-    echo "Slot $index with team $team_name and logo $tag_lower.png"
+    echo "Slot $teams with team $team_name and logo $tag_lower.png"
 
     # Increment the teamsIndex for the next iteration
     ((teams++))

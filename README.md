@@ -2,6 +2,9 @@
 
 The script is designed to create team logos and an INI file for PUBG Mobile PCOB Client. It generates the required formats and naming conventions specified for the files. The problem this script solves is the need to have all logos in uniform sizes and file formats for PCOB. Often, logos are received in different sizes and formats, but PCOB requires consistency. This script simplifies and automates the manual work involved in achieving this.
 
+## UPDATE 03/2024
+We have transformed this script into a comprehensive service website that you can use for free. Visit https://logo-generator.euroelite.online/ to access our online platform designed for creating team logos and generating INI files for the PUBG Mobile PCOB Client. This website simplifies the process of ensuring all logos meet the uniform size and format requirements set by PCOB, automating the previously manual task of standardizing these elements for your team's needs.
+
 ## Features
 - Automatically resizes and centers logo images to match specific dimensions (256x256, 128x128, and 64x64 pixels).
 - Converts jpg and jpeg files to PNG format, ensuring uniformity for all logos.
